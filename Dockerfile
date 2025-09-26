@@ -18,8 +18,9 @@ RUN apt-get update && \
     wget \
     unzip \
     ca-certificates \
-    # The required legacy Python 2.7 library
+    # The required legacy Python 2.7 libraries
     libpython2.7 \
+    python-setuptools \
     # Dependencies for the Python 3 proxy
     python3 \
     python3-psutil \

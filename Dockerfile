@@ -21,6 +21,7 @@ RUN apt-get update && \
     # The required legacy Python 2.7 libraries
     libpython2.7 \
     python-setuptools \
+    python-apsw \
     # Dependencies for the Python 3 proxy
     python3 \
     python3-psutil \

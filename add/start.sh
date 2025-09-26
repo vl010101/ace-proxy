@@ -1,8 +1,13 @@
 #!/bin/bash
 
-python3.7 /opt/HTTPAceProxy-master/acehttp.py >/dev/null 2>&1 &
+echo "Starting Ace Stream engine in the background..."
+# Start the engine in the background
+/opt/acestream.engine/start-engine --bind-all &
 
-while true; do
-        sleep 600
-        rm -rf /tmp/.ACEStream/collected_torrent_files/*
-done
+echo "Waiting for 5 seconds for the engine to initialize..."
+sleep 5
+
+echo "Starting HTTPAceProxy in the foreground..."
+# Use exec to replace the shell process with the python process.
+# This makes it the main process of the container.
+exec python3 /opt/HTTPAceProxy-master/acehttp.py

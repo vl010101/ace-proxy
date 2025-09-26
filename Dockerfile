@@ -28,7 +28,8 @@ RUN apt-get update && \
     # --- НОВЫЕ СТРОКИ ДЛЯ ИСПРАВЛЕНИЯ ---
     # Скачиваем и устанавливаем недостающую библиотеку Python 2.7 для старого движка AceStream
     echo "Installing legacy Python 2.7 library for AceStream engine..." && \
-    wget -O /tmp/libpython2.7.deb http://archive.ubuntu.com/ubuntu/pool/main/p/python2.7/libpython2.7-minimal_2.7.18-1~20.04.2_amd64.deb && \
+    # ИСПРАВЛЕННАЯ ССЫЛКА
+    wget -O /tmp/libpython2.7.deb http://security.ubuntu.com/ubuntu/pool/main/p/python2.7/libpython2.7-minimal_2.7.18-1~20.04.5_amd64.deb && \
     dpkg -i /tmp/libpython2.7.deb && \
     rm /tmp/libpython2.7.deb && \
     # --- КОНЕЦ НОВЫХ СТРОК ---

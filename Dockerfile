@@ -1,23 +1,26 @@
-# 1. Используем современную LTS-версию Ubuntu
-FROM ubuntu:22.04
+# Use Ubuntu 20.04, which has the required legacy libraries
+FROM ubuntu:20.04
 
-# Устанавливаем переменные для неинтерактивной установки
+# Set environment variables for non-interactive installation
 ENV TZ=Europe/Moscow \
     DEBIAN_FRONTEND=noninteractive
 
-# Открываем порты
+# Expose the necessary ports
 EXPOSE 8081 62062 6878 8621
 
-# Создаем том для медиафайлов
+# Create a volume for media files
 VOLUME /mnt/films
 
-# 2. Объединяем установку пакетов в один слой
+# Update, install dependencies, and clean up in a single layer
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
+    # System utilities
     wget \
     unzip \
     ca-certificates \
-    tzdata \
+    # The required legacy Python 2.7 library
+    libpython2.7 \
+    # Dependencies for the Python 3 proxy
     python3 \
     python3-psutil \
     python3-gevent \
@@ -25,35 +28,29 @@ RUN apt-get update && \
     python3-m2crypto \
     python3-apsw \
     python3-lxml && \
-    # --- НОВЫЕ СТРОКИ ДЛЯ ИСПРАВЛЕНИЯ ---
-    # Скачиваем и устанавливаем недостающую библиотеку Python 2.7 для старого движка AceStream
-    echo "Installing legacy Python 2.7 library for AceStream engine..." && \
-    # ИСПРАВЛЕННАЯ ССЫЛКА
-    wget -O /tmp/libpython2.7.deb http://security.ubuntu.com/ubuntu/pool/main/p/python2.7/libpython2.7-minimal_2.7.18-1~20.04.5_amd64.deb && \
-    dpkg -i /tmp/libpython2.7.deb && \
-    rm /tmp/libpython2.7.deb && \
-    # --- КОНЕЦ НОВЫХ СТРОК ---
-    mkdir -p /mnt/films && \
+    # Download and extract AceStream
     echo "Downloading AceStream..." && \
     wget -O /tmp/acestream.zip https://github.com/vl010101/httpaceproxy/blob/master/add/acestream_3.1.49_ubuntu_18.04_x86_64.zip?raw=true && \
+    unzip /tmp/acestream.zip -d /opt/ && \
+    # Download and extract HTTPAceProxy
     echo "Downloading HTTPAceProxy..." && \
     wget -O /tmp/aceproxy.zip https://github.com/pepsik-kiev/HTTPAceProxy/archive/master.zip && \
-    unzip /tmp/acestream.zip -d /opt/ && \
     unzip /tmp/aceproxy.zip -d /opt/ && \
-    rm -rf /tmp/acestream.zip /tmp/aceproxy.zip && \
+    # Clean up temporary files and apt cache
+    rm -rf /tmp/*.zip && \
     apt-get purge -y --auto-remove wget unzip && \
     rm -rf /var/lib/apt/lists/*
 
-# Копируем локальные файлы конфигурации
+# Add local configuration files
 ADD add/torrenttv.py /opt/HTTPAceProxy-master/plugins/config/torrenttv.py
 ADD add/aceconfig.py /opt/HTTPAceProxy-master/aceconfig.py
 ADD add/start.sh /opt/start.sh
 
-# Устанавливаем права на исполнение
+# Set executable permissions
 RUN chmod +x /opt/acestream.engine/start-engine && \
     chmod +x /opt/acestream.engine/acestreamengine && \
     chmod +x /opt/HTTPAceProxy-master/acehttp.py && \
     chmod +x /opt/start.sh
 
-# Команда для запуска контейнера
+# Set the command to run on container start
 CMD ["/opt/start.sh"]

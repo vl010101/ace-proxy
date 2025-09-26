@@ -14,12 +14,10 @@ VOLUME /mnt/films
 # 2. Объединяем установку пакетов в один слой
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
-    # Утилиты
     wget \
     unzip \
     ca-certificates \
     tzdata \
-    # Зависимости Python 3
     python3 \
     python3-psutil \
     python3-gevent \
@@ -27,28 +25,30 @@ RUN apt-get update && \
     python3-m2crypto \
     python3-apsw \
     python3-lxml && \
-    # Создаем директорию
+    # --- НОВЫЕ СТРОКИ ДЛЯ ИСПРАВЛЕНИЯ ---
+    # Скачиваем и устанавливаем недостающую библиотеку Python 2.7 для старого движка AceStream
+    echo "Installing legacy Python 2.7 library for AceStream engine..." && \
+    wget -O /tmp/libpython2.7.deb http://archive.ubuntu.com/ubuntu/pool/main/p/python2.7/libpython2.7-minimal_2.7.18-1~20.04.2_amd64.deb && \
+    dpkg -i /tmp/libpython2.7.deb && \
+    rm /tmp/libpython2.7.deb && \
+    # --- КОНЕЦ НОВЫХ СТРОК ---
     mkdir -p /mnt/films && \
-    # 3. Скачиваем архивы с чистыми именами с помощью `wget -O`
     echo "Downloading AceStream..." && \
     wget -O /tmp/acestream.zip https://github.com/vl010101/httpaceproxy/blob/master/add/acestream_3.1.49_ubuntu_18.04_x86_64.zip?raw=true && \
     echo "Downloading HTTPAceProxy..." && \
     wget -O /tmp/aceproxy.zip https://github.com/pepsik-kiev/HTTPAceProxy/archive/master.zip && \
-    # Распаковываем
     unzip /tmp/acestream.zip -d /opt/ && \
     unzip /tmp/aceproxy.zip -d /opt/ && \
-    # Очищаем кэш и временные файлы
     rm -rf /tmp/acestream.zip /tmp/aceproxy.zip && \
     apt-get purge -y --auto-remove wget unzip && \
     rm -rf /var/lib/apt/lists/*
 
 # Копируем локальные файлы конфигурации
-# Убедитесь, что рядом с Dockerfile есть папка `add` с этими файлами
 ADD add/torrenttv.py /opt/HTTPAceProxy-master/plugins/config/torrenttv.py
 ADD add/aceconfig.py /opt/HTTPAceProxy-master/aceconfig.py
 ADD add/start.sh /opt/start.sh
 
-# 4. Устанавливаем права на исполнение
+# Устанавливаем права на исполнение
 RUN chmod +x /opt/acestream.engine/start-engine && \
     chmod +x /opt/acestream.engine/acestreamengine && \
     chmod +x /opt/HTTPAceProxy-master/acehttp.py && \

@@ -27,15 +27,21 @@ sudo apt-get install -y net-tools git mc htop ffmpeg supervisor tor apache2 mari
 
 echo "Basic packages installed."
 
-## 2. Установка Python 2.7 вручную из репозиториев Ubuntu 20.04
-echo "Installing Python 2.7 manually..."
+## 2. Установка Python 2.7 вручную (исправленные ссылки)
+echo "Installing Python 2.7 manually (using updated links)..."
 cd /tmp
-# Скачиваем необходимые пакеты .deb для Python 2.7
+# Скачиваем обновленные версии пакетов .deb для Python 2.7
 wget http://archive.ubuntu.com/ubuntu/pool/main/m/mime-support/mime-support_3.64ubuntu1_all.deb
-wget http://archive.ubuntu.com/ubuntu/pool/main/p/python2.7/libpython2.7-minimal_2.7.18-1~20.04.3_amd64.deb
-wget http://archive.ubuntu.com/ubuntu/pool/main/p/python2.7/python2.7-minimal_2.7.18-1~20.04.3_amd64.deb
-wget http://archive.ubuntu.com/ubuntu/pool/main/p/python2.7/libpython2.7-stdlib_2.7.18-1~20.04.3_amd64.deb
-wget http://archive.ubuntu.com/ubuntu/pool/main/p/python2.7/python2.7_2.7.18-1~20.04.3_amd64.deb
+wget http://archive.ubuntu.com/ubuntu/pool/main/p/python2.7/libpython2.7-minimal_2.7.18-1~20.04.5_amd64.deb
+wget http://archive.ubuntu.com/ubuntu/pool/main/p/python2.7/python2.7-minimal_2.7.18-1~20.04.5_amd64.deb
+wget http://archive.ubuntu.com/ubuntu/pool/main/p/python2.7/libpython2.7-stdlib_2.7.18-1~20.04.5_amd64.deb
+wget http://archive.ubuntu.com/ubuntu/pool/main/p/python2.7/python2.7_2.7.18-1~20.04.5_amd64.deb
+
+# Устанавливаем их
+sudo dpkg -i ./*.deb
+# Исправляем возможные проблемы с зависимостями
+sudo apt-get -f install -y
+echo "Python 2.7 should be installed."
 
 # Устанавливаем их, игнорируя некоторые зависимости, которые исправим позже
 sudo dpkg -i ./*.deb

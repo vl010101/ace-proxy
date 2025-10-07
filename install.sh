@@ -1,7 +1,5 @@
 #!/bin/bash
 
-# --- НАСТРОЙКИ ---
-# Замените 'YOUR_GITHUB_USERNAME' на ваш никнейм в GitHub.
 GITHUB_USER="vl010101"
 # Имя репозитория с файлами зависимостей.
 FILES_REPO="ace-proxy"

@@ -6,7 +6,7 @@
 # Выход при любой ошибке
 set -e
 
-# --- ВАШИ ДАННЫЛЕ УЖЕ ВСТАВЛЕНЫ ---
+# --- ВАШИ ДАННЫЕ УЖЕ ВСТАВЛЕНЫ ---
 GITHUB_USER="vl010101"
 FILES_REPO="ace-proxy"
 BRANCH_PATH="refs/heads/master"

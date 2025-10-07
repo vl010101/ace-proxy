@@ -1,2 +1,2 @@
 Инструкция по установке и запуску
-bash -c "$(wget -qO- https://raw.githubusercontent.com/vl010101/aceproxy-files/main/install.sh)"
+bash -c "$(wget -qO- https://raw.githubusercontent.com/vl010101/ace-proxy/main/install.sh)"
